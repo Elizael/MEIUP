@@ -41,14 +41,40 @@ document.getElementById('btnProcessar').addEventListener('click', () => {
   ];
 
   const dados = {};
-  for (let i = 0; i < linhas.length - 1; i++) {
+  let dataEmissao = "";
+  let i = 0;
+  while (i < linhas.length - 1) {
     const linha = linhas[i].toUpperCase();
-    if (chavesEsperadas.includes(linha)) {
-      dados[linha] = linhas[i + 1];
+
+    if (linha.startsWith("EMITIDO NO DIA")) {
+      dataEmissao = linhas[i];
     }
+
+    if (chavesEsperadas.includes(linha)) {
+      if (linha === "CÓDIGO E DESCRIÇÃO DAS ATIVIDADES ECONÔMICAS SECUNDÁRIAS") {
+        let atividades = [];
+        let j = i + 1;
+        while (j < linhas.length && !chavesEsperadas.includes(linhas[j].toUpperCase())) {
+          atividades.push(linhas[j]);
+          j++;
+        }
+        dados[linha] = atividades;
+        i = j - 1;
+      } else {
+        dados[linha] = linhas[i + 1];
+        i++;
+      }
+    }
+    i++;
   }
 
-  const renderCampo = (label) => dados[label] ? `<p><strong>${label}:</strong> ${dados[label]}</p>` : "";
+  const renderCampo = (label) => {
+    if (!dados[label]) return "";
+    if (Array.isArray(dados[label])) {
+      return `<p><strong>${label}:</strong><br><ul>` + dados[label].map(v => `<li>${v}</li>`).join("") + `</ul></p>`;
+    }
+    return `<p><strong>${label}:</strong> ${dados[label]}</p>`;
+  };
 
   let html = `
     <h3>📄 Dados Cadastrais</h3>
@@ -80,6 +106,8 @@ document.getElementById('btnProcessar').addEventListener('click', () => {
     ${renderCampo("MOTIVO DE SITUAÇÃO CADASTRAL")}
     ${renderCampo("SITUAÇÃO ESPECIAL")}
     ${renderCampo("DATA DA SITUAÇÃO ESPECIAL")}
+
+    ${dataEmissao ? `<h3>🕓 Emissão</h3><p>${dataEmissao}</p>` : ""}
   `;
 
   document.getElementById('dadosProcessados').innerHTML = html;
