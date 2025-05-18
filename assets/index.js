@@ -27,13 +27,24 @@ document.getElementById('btnIniciar').addEventListener('click', () => {
 document.getElementById('btnProcessar').addEventListener('click', () => {
   const raw = document.getElementById('resultadoRaw').value;
   const linhas = raw.split(/\n|\r/).map(l => l.trim()).filter(l => l.length > 0);
+
+  const chavesEsperadas = [
+    "NÚMERO DE INSCRIÇÃO", "DATA DE ABERTURA", "NOME EMPRESARIAL", 
+    "TÍTULO DO ESTABELECIMENTO (NOME DE FANTASIA)", "PORTE",
+    "CÓDIGO E DESCRIÇÃO DA ATIVIDADE ECONÔMICA PRINCIPAL",
+    "CÓDIGO E DESCRIÇÃO DAS ATIVIDADES ECONÔMICAS SECUNDÁRIAS",
+    "CÓDIGO E DESCRIÇÃO DA NATUREZA JURÍDICA", "LOGRADOURO", "NÚMERO",
+    "COMPLEMENTO", "CEP", "BAIRRO/DISTRITO", "MUNICÍPIO", "UF",
+    "ENDEREÇO ELETRÔNICO", "TELEFONE", "SITUAÇÃO CADASTRAL",
+    "DATA DA SITUAÇÃO CADASTRAL", "MOTIVO DE SITUAÇÃO CADASTRAL",
+    "SITUAÇÃO ESPECIAL", "DATA DA SITUAÇÃO ESPECIAL"
+  ];
+
   const dados = {};
-  for (let i = 0; i < linhas.length; i++) {
-    if (linhas[i].includes(":")) {
-      const partes = linhas[i].split(":");
-      const chave = partes[0].trim();
-      const valor = partes.slice(1).join(":").trim();
-      dados[chave] = valor;
+  for (let i = 0; i < linhas.length - 1; i++) {
+    const linha = linhas[i].toUpperCase();
+    if (chavesEsperadas.includes(linha)) {
+      dados[linha] = linhas[i + 1];
     }
   }
 
