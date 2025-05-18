@@ -37,11 +37,39 @@ document.getElementById('btnProcessar').addEventListener('click', () => {
     }
   }
 
-  let html = '<h3>Dados extraídos:</h3><ul>';
-  for (const [chave, valor] of Object.entries(dados)) {
-    html += `<li><strong>${chave}:</strong> ${valor}</li>`;
-  }
-  html += '</ul>';
+  const renderCampo = (label) => dados[label] ? `<p><strong>${label}:</strong> ${dados[label]}</p>` : "";
+
+  let html = `
+    <h3>📄 Dados Cadastrais</h3>
+    ${renderCampo("NÚMERO DE INSCRIÇÃO")}
+    ${renderCampo("DATA DE ABERTURA")}
+    ${renderCampo("NOME EMPRESARIAL")}
+    ${renderCampo("TÍTULO DO ESTABELECIMENTO (NOME DE FANTASIA)")}
+    ${renderCampo("PORTE")}
+
+    <h3>🏢 Atividades</h3>
+    ${renderCampo("CÓDIGO E DESCRIÇÃO DA ATIVIDADE ECONÔMICA PRINCIPAL")}
+    ${renderCampo("CÓDIGO E DESCRIÇÃO DAS ATIVIDADES ECONÔMICAS SECUNDÁRIAS")}
+    ${renderCampo("CÓDIGO E DESCRIÇÃO DA NATUREZA JURÍDICA")}
+
+    <h3>📍 Endereço</h3>
+    ${renderCampo("LOGRADOURO")} ${renderCampo("NÚMERO")}
+    ${renderCampo("COMPLEMENTO")}
+    ${renderCampo("CEP")}
+    ${renderCampo("BAIRRO/DISTRITO")}
+    ${renderCampo("MUNICÍPIO")} - ${dados["UF"] || ""}
+
+    <h3>📞 Contato</h3>
+    ${renderCampo("ENDEREÇO ELETRÔNICO")}
+    ${renderCampo("TELEFONE")}
+
+    <h3>📌 Situação</h3>
+    ${renderCampo("SITUAÇÃO CADASTRAL")}
+    ${renderCampo("DATA DA SITUAÇÃO CADASTRAL")}
+    ${renderCampo("MOTIVO DE SITUAÇÃO CADASTRAL")}
+    ${renderCampo("SITUAÇÃO ESPECIAL")}
+    ${renderCampo("DATA DA SITUAÇÃO ESPECIAL")}
+  `;
 
   document.getElementById('dadosProcessados').innerHTML = html;
 });
